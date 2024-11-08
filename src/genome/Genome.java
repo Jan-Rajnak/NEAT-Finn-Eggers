@@ -165,14 +165,11 @@ public class Genome {
                 continue;
             }
 
-            neat.printAllConnections();
             ConnectionGene con;
             if(a.getX() < b.getX()){
                 con = neat.getConnection(a,b);
-                System.out.println("New connection from " + a.getInnovationNumber() + " to " + b.getInnovationNumber() + " with innovation number " + con.getInnovationNumber());
             }else{
                 con = neat.getConnection(b,a);
-                System.out.println("New connection from " + b.getInnovationNumber() + " to " + a.getInnovationNumber() + " with innovation number " + con.getInnovationNumber());
             }
 
             if(connections.contains(con)){
@@ -183,6 +180,8 @@ public class Genome {
             con.setWeight((Math.random() * 2 - 1) * neat.getWEIGHT_RANDOM_STRENGTH());
 
             connections.add(con);
+            System.out.println("added connection" + con);
+            neat.printAllConnections();
             return;
         }
     }

@@ -22,7 +22,8 @@ public class Neat {
     private final double PROBABILITY_MUTATE_WEIGHT_RANDOM= 0.4;
     private final double PROBABILITY_MUTATE_TOGGLE_LINK = 0.4;
 
-    private HashMap<ConnectionGene, ConnectionGene> all_connections = new HashMap<>();
+//    private HashMap<ConnectionGene, ConnectionGene> all_connections = new HashMap<>();
+    private Innovations innovations = new Innovations();
     private GeneSet all_nodes = new GeneSet();
     private int max_clients;
     private int output_size;
@@ -44,7 +45,7 @@ public class Neat {
         this.output_size = output_size;
         this.max_clients = clients;
 
-        all_connections.clear();
+        innovations = new Innovations();
         all_nodes.clear();
 
         for(int i = 0;i < input_size; i++){
@@ -69,15 +70,7 @@ public class Neat {
     }
     public ConnectionGene getConnection(NodeGene node1, NodeGene node2){
         ConnectionGene connectionGene = new ConnectionGene(node1, node2);
-
-        if(all_connections.containsKey(connectionGene)){
-            connectionGene.setInnovationNumber(all_connections.get(connectionGene).getInnovationNumber());
-        }else{
-            connectionGene.setInnovationNumber(all_connections.size() + 1);
-            all_connections.put(connectionGene, connectionGene);
-        }
-
-        return connectionGene;
+        return  innovations.getConnection(connectionGene);
     }
 
     public NodeGene getNode() {
@@ -144,9 +137,7 @@ public class Neat {
     }
 
     public void printAllConnections(){
-        for(ConnectionGene con : all_connections.keySet()){
-            System.out.println(con);
-        }
+        innovations.print();
     }
 
 }
