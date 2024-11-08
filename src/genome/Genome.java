@@ -1,7 +1,14 @@
 package genome;
 
+import com.sun.source.tree.Tree;
 import lib.util.GeneSet;
 import neat.Neat;
+import org.w3c.dom.Node;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
 
 public class Genome {
 
@@ -232,6 +239,71 @@ public class Genome {
         }
     }
 
+    public double[] evaluate(double... inputs){
+        if (inputs.length != neat.getInput_size()){
+            throw new RuntimeException("Invalid input size");
+        }
 
+        double[] outputs = new double[neat.getOutput_size()];
+
+        // Set input nodes
+        for (int i = 0; i < neat.getInput_size(); i++){
+            NodeGene node = (NodeGene) nodes.getGenes().get(i);
+            node.setValue(inputs[i]);
+            node.activate();
+        }
+
+        TreeMap<Double, List<NodeGene>> sorted = sortNodesByX();
+        // Remove the input nodes and bias nodes
+        sorted.remove(0.1);
+        sorted.remove(0.15);
+        HashMap<NodeGene, List<ConnectionGene>> connsIn = createConnsIn(nodes);
+        for (List<NodeGene> list : sorted.values()){
+            for (NodeGene n : list){
+                double sum = 0;
+                for (ConnectionGene c : connsIn.get(n)){
+                    if (c.isEnabled()){
+                        sum += c.getFrom().getValue() * c.getWeight();
+                    }
+                }
+                n.setValue(sum);
+                n.activate();
+            }
+        }
+
+        for (int i = 0; i < neat.getOutput_size(); i++){
+            outputs[i] = ((NodeGene) nodes.getGenes().get(neat.getInput_size() + i)).getValue();
+        }
+
+        return outputs;
+    }
+
+    private TreeMap<Double, List<NodeGene>> sortNodesByX(){
+        TreeMap<Double, List<NodeGene>> sorted = new TreeMap<>();
+        for (Gene n : nodes.getGenes()){
+            NodeGene node = (NodeGene) n;
+            if (sorted.containsKey(node.getX())){
+                sorted.get(node.getX()).add(node);
+            } else {
+                List<NodeGene> list = new ArrayList<>();
+                list.add(node);
+                sorted.put(node.getX(), list);
+            }
+        }
+        return sorted;
+    }
+
+    private HashMap<NodeGene, List<ConnectionGene>> createConnsIn(GeneSet nodes){
+        HashMap<NodeGene, List<ConnectionGene>> connsIn = new HashMap<>();
+        for (Gene n : nodes.getGenes()){
+            NodeGene node = (NodeGene) n;
+            connsIn.put(node, new ArrayList<>());
+        }
+        for (Gene c : connections.getGenes()){
+            ConnectionGene conn = (ConnectionGene) c;
+            connsIn.get(conn.getTo()).add(conn);
+        }
+        return connsIn;
+    }
 
 }

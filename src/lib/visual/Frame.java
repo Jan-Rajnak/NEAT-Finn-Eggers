@@ -118,8 +118,7 @@ public class Frame extends JFrame {
         buttonG.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //genome.generate_calculator();
-                //System.out.println(Arrays.toString(genome.calculate(1,1,1)));
+                System.out.println(Arrays.toString(genome.evaluate(0, 0, 0)));
                 repaint();
             }
         });

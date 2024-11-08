@@ -18,6 +18,8 @@ public class Innovations {
     private ConnectionGene create(ConnectionGene gene){
         current_innovation++;
         gene.setInnovationNumber(current_innovation);
+        gene.setWeight(0);
+        gene.setEnabled(true);
         innovations.put(current_innovation, gene);
         return gene;
     }
@@ -33,15 +35,6 @@ public class Innovations {
 
     public int size(){
         return innovations.size();
-    }
-
-    public int getInnovationInt(ConnectionGene gene){
-        for (ConnectionGene g : innovations.values()){
-            if (g.equals(gene)){
-                return g.getInnovationNumber();
-            }
-        }
-        return -1;
     }
 
     public void print(){
