@@ -22,7 +22,6 @@ public class Neat {
     private final double PROBABILITY_MUTATE_WEIGHT_RANDOM= 0.4;
     private final double PROBABILITY_MUTATE_TOGGLE_LINK = 0.4;
 
-//    private HashMap<ConnectionGene, ConnectionGene> all_connections = new HashMap<>();
     private Innovations innovations = new Innovations();
     private GeneSet all_nodes = new GeneSet();
     private int max_clients;
