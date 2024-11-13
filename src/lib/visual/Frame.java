@@ -92,37 +92,46 @@ public class Frame extends JFrame {
         });
         menu.add(buttonD);
 
-
-
-        JButton buttonE = new JButton("on/off");
+        JButton buttonE = new JButton("Bias mutate");
         buttonE.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                genome.mutate_bias_node();
+                repaint();
+            }
+        });
+        menu.add(buttonE);
+
+
+        JButton buttonF = new JButton("on/off");
+        buttonF.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 genome.mutate_link_toggle();
                 repaint();
             }
         });
-        menu.add(buttonE);
+        menu.add(buttonF);
 
-        JButton buttonF = new JButton("Mutate");
-        buttonF.addActionListener(new ActionListener() {
+        JButton buttonG = new JButton("Mutate");
+        buttonG.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 genome.mutate();
                 repaint();
             }
         });
-        menu.add(buttonF);
+        menu.add(buttonG);
 
-        JButton buttonG = new JButton("Calculate");
-        buttonG.addActionListener(new ActionListener() {
+        JButton buttonH = new JButton("Calculate");
+        buttonH.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(Arrays.toString(genome.evaluate(0, 0, 0)));
                 repaint();
             }
         });
-        menu.add(buttonG);
+        menu.add(buttonH);
 
 
         this.add(menu, BorderLayout.NORTH);

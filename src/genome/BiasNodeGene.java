@@ -6,11 +6,19 @@ public class BiasNodeGene extends NodeGene{
     public BiasNodeGene(int innovationNumber, double bias) {
         super(innovationNumber);
         this.bias = bias;
-        x = 0.15;
     }
 
     @Override
     public void setValue(double value) {}
+
+    public void setBias(double bias) {
+        this.bias = bias;
+    }
+
+    @Override
+    public double getValue() {
+        return bias;
+    }
 
     @Override
     public double activate() {

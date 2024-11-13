@@ -1,6 +1,8 @@
 package lib.util;
 
+import genome.BiasNodeGene;
 import genome.Gene;
+import genome.NodeGene;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,14 @@ public class GeneSet {
         return new ArrayList<>(genes.values());
     }
 
+    public List<NodeGene> getNodeGenes(){
+        List<NodeGene> nodes = new ArrayList<>();
+        for (Gene gene : genes.values()){
+            nodes.add((NodeGene) gene);
+        }
+        return nodes;
+    }
+
     public boolean contains(Gene gene){
         return genes.containsKey(gene.getInnovationNumber());
     }
@@ -55,6 +65,16 @@ public class GeneSet {
 
     public Gene random(){
         int index = (int) (Math.random() * genes.size() + 1);
+        return genes.get(index);
+    }
+
+    public Gene randomNode(List<String> exclude){
+        List<NodeGene> nodes = getNodeGenes();
+        if (exclude.contains("input")) nodes.removeIf(nodeGene -> nodeGene.getX() == 0.1);
+        if (exclude.contains("output")) nodes.removeIf(nodeGene -> nodeGene.getX() == 0.9);
+        if (exclude.contains("bias")) nodes.removeIf(nodeGene -> nodeGene instanceof BiasNodeGene);
+        if (exclude.contains("hidden")) nodes.removeIf(nodeGene -> nodeGene.getX() != 0.1 || nodeGene.getX() != 0.9 || nodeGene instanceof BiasNodeGene);
+        int index = (int) (Math.random() * (genes.size()-1)) + 1;
         return genes.get(index);
     }
 

@@ -158,6 +158,8 @@ public class Genome {
             mutate_weight_random();
         }if(neat.getPROBABILITY_MUTATE_TOGGLE_LINK() > Math.random()){
             mutate_link_toggle();
+        }if (neat.getPROBABILITY_BIAS_NODE() > Math.random()){
+            mutate_bias_node();
         }
     }
 
@@ -216,6 +218,22 @@ public class Genome {
         connections.add(con2);
 
         nodes.add(middle);
+    }
+
+    public void mutate_bias_node(){
+        BiasNodeGene bn = neat.getBiasNode();
+        bn.setBias(Math.random() * 2 - 1);
+        nodes.add(bn);
+        // Choose a random node to connect to
+        NodeGene node = (NodeGene) nodes.randomNode(List.of("input", "bias"));
+        ConnectionGene con = neat.getConnection(bn, node);
+
+        con.setWeight((Math.random() * 2 - 1) * neat.getWEIGHT_RANDOM_STRENGTH());
+        connections.add(con);
+        // Set the bias node's x and y values
+        bn.setX(0.15);
+        bn.setY(Math.random());
+
     }
 
     public void mutate_weight_shift() {

@@ -1,5 +1,6 @@
 package neat;
 
+import genome.BiasNodeGene;
 import genome.ConnectionGene;
 import genome.Genome;
 import genome.NodeGene;
@@ -18,6 +19,7 @@ public class Neat {
 
     private final double PROBABILITY_MUTATE_LINK = 0.4;
     private final double PROBABILITY_MUTATE_NODE = 0.4;
+    private final double PROBABILITY_BIAS_NODE = 0.4;
     private final double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.4;
     private final double PROBABILITY_MUTATE_WEIGHT_RANDOM= 0.4;
     private final double PROBABILITY_MUTATE_TOGGLE_LINK = 0.4;
@@ -81,6 +83,11 @@ public class Neat {
         if(id <= all_nodes.size()) return (NodeGene) all_nodes.get(id);
         return getNode();
     }
+    public BiasNodeGene getBiasNode(){
+        BiasNodeGene bn = new BiasNodeGene(all_nodes.size() + 1, 1);
+        all_nodes.add(bn);
+        return bn;
+    }
 
     public static void main(String[] args) {
         Neat neat = new Neat(3,2,0);
@@ -113,6 +120,10 @@ public class Neat {
 
     public double getPROBABILITY_MUTATE_NODE() {
         return PROBABILITY_MUTATE_NODE;
+    }
+
+    public double getPROBABILITY_BIAS_NODE() {
+        return PROBABILITY_BIAS_NODE;
     }
 
     public double getPROBABILITY_MUTATE_WEIGHT_SHIFT() {

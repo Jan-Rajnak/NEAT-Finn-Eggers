@@ -1,9 +1,6 @@
 package lib.visual;
 
-import genome.ConnectionGene;
-import genome.Gene;
-import genome.Genome;
-import genome.NodeGene;
+import genome.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +40,11 @@ public class Panel extends JPanel {
     }
 
     private void paintNode(NodeGene n, Graphics2D g){
-        g.setColor(Color.gray);
+        if (n instanceof BiasNodeGene){
+            g.setColor(Color.blue);
+        } else {
+            g.setColor(Color.gray);
+        }
         g.setStroke(new BasicStroke(3));
         g.drawOval((int)(this.getWidth() * n.getX()) - 10,
                 (int)(this.getHeight() * n.getY()) - 10,20,20);
