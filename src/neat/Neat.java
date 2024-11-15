@@ -24,6 +24,8 @@ public class Neat {
     private final double PROBABILITY_MUTATE_WEIGHT_RANDOM= 0.4;
     private final double PROBABILITY_MUTATE_TOGGLE_LINK = 0.4;
 
+    private final double SPECIES_THRESHOLD = 3;
+
     private Innovations innovations = new Innovations();
     private GeneSet all_nodes = new GeneSet();
     private int max_clients;
@@ -63,8 +65,9 @@ public class Neat {
 
     }
 
-    public static ConnectionGene getConnection(ConnectionGene con){
+    public ConnectionGene getConnection(ConnectionGene con){
         ConnectionGene c = new ConnectionGene(con.getFrom(), con.getTo());
+        c.setInnovationNumber(con.getInnovationNumber());
         c.setWeight(con.getWeight());
         c.setEnabled(con.isEnabled());
         return c;
@@ -136,6 +139,10 @@ public class Neat {
 
     public double getPROBABILITY_MUTATE_TOGGLE_LINK() {
         return PROBABILITY_MUTATE_TOGGLE_LINK;
+    }
+
+    public double getSPECIES_THRESHOLD() {
+        return SPECIES_THRESHOLD;
     }
 
     public int getOutput_size() {

@@ -12,9 +12,11 @@ import java.util.TreeMap;
 
 public class Genome {
 
-    private GeneSet connections = new GeneSet();
-    private GeneSet nodes = new GeneSet();
-    private Neat neat;
+    private final GeneSet connections = new GeneSet();
+    private final GeneSet nodes = new GeneSet();
+    private final Neat neat;
+
+    private double fitness = 0;
 
     public Genome(Neat neat){
         this.neat = neat;
@@ -323,5 +325,19 @@ public class Genome {
         }
         return connsIn;
     }
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
+
+    public Neat getNeat() {
+        return neat;
+    }
+
+
 
 }
