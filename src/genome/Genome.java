@@ -1,9 +1,7 @@
 package genome;
 
-import com.sun.source.tree.Tree;
 import lib.util.GeneSet;
 import neat.Neat;
-import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -151,26 +149,28 @@ public class Genome {
 
     public void mutate(){
         if(neat.getPROBABILITY_MUTATE_LINK() > Math.random()){
-            mutate_link();
+            add_connection();
         }if(neat.getPROBABILITY_MUTATE_NODE() > Math.random()){
-            mutate_node();
+            add_node();
         }if(neat.getPROBABILITY_MUTATE_WEIGHT_SHIFT() > Math.random()){
-            mutate_weight_shift();
+            weight_shift();
         }if(neat.getPROBABILITY_MUTATE_WEIGHT_RANDOM() > Math.random()){
-            mutate_weight_random();
+            weight_random();
         }if(neat.getPROBABILITY_MUTATE_TOGGLE_LINK() > Math.random()){
-            mutate_link_toggle();
+            connection_toggle();
         }if (neat.getPROBABILITY_BIAS_NODE() > Math.random()){
-            mutate_bias_node();
+            add_bias_node();
         }
+        neat.printAllNodes();
+        neat.printAllConnections();
     }
 
-    public void mutate_link() {
+    public void add_connection() {
 
         for(int i = 0; i < 100; i++){
 
             NodeGene a = (NodeGene) nodes.random();
-            NodeGene b = (NodeGene) nodes.random();
+            NodeGene b = nodes.randomNode("input" , "bias");
 
             if(a.getX() == b.getX()){
                 continue;
@@ -188,16 +188,21 @@ public class Genome {
             }
 
             con = neat.getConnection(con.getFrom(), con.getTo());
+            // Check if the connection is valid
+            if (con.getFrom().getX() >= con.getTo().getX()) throw new RuntimeException("Connection going into node with lower X");
+            if (con.getTo() instanceof BiasNodeGene) throw new IllegalStateException("Connection going into a bias node");
+
             con.setWeight((Math.random() * 2 - 1) * neat.getWEIGHT_RANDOM_STRENGTH());
 
             connections.add(con);
+
+            // Log
             System.out.println("added connection" + con);
-            neat.printAllConnections();
             return;
         }
     }
 
-    public void mutate_node() {
+    public void add_node() {
         ConnectionGene con = (ConnectionGene) connections.random();
         if(con == null) return;
 
@@ -220,43 +225,72 @@ public class Genome {
         connections.add(con2);
 
         nodes.add(middle);
+
+        // Log
+        System.out.println("added node " + middle);
+        System.out.println("added connection " + con1);
+        System.out.println("added connection " + con2);
     }
 
-    public void mutate_bias_node(){
+    public void add_bias_node(){
         BiasNodeGene bn = neat.getBiasNode();
         bn.setBias(Math.random() * 2 - 1);
-        nodes.add(bn);
         // Choose a random node to connect to
-        NodeGene node = (NodeGene) nodes.randomNode(List.of("input", "bias"));
+        NodeGene node = nodes.randomNode(List.of("input", "bias"));
+        if (node == null) return;
+        if (node.getX() == 0.15) throw new RuntimeException("Bias node cannot connect to another bias node");
+        if (node.getX() == 0.1) throw new RuntimeException("Bias node cannot connect to an input node");
         ConnectionGene con = neat.getConnection(bn, node);
 
         con.setWeight((Math.random() * 2 - 1) * neat.getWEIGHT_RANDOM_STRENGTH());
+        // Check if the connection is valid
+        if (con.getFrom().getX() >= con.getTo().getX()) throw new RuntimeException("Connection going into node with lower X");
+        if (con.getTo() instanceof BiasNodeGene) throw new IllegalStateException("Connection going into a bias node");
         connections.add(con);
         // Set the bias node's x and y values
         bn.setX(0.15);
         bn.setY(Math.random());
 
+        nodes.add(bn);
+
+        // Log
+        System.out.println("added bias node " + bn);
+        System.out.println("added connection " + con);
     }
 
-    public void mutate_weight_shift() {
-        ConnectionGene con = (ConnectionGene) connections.random();
-        if(con != null){
-            con.setWeight(con.getWeight() + (Math.random() * 2 - 1) * neat.getWEIGHT_SHIFT_STRENGTH());
-        }
+    public void weight_shift() {
+        List<Gene> possibilities = new ArrayList<>(connections.getGenes());           // Add all connections
+        possibilities.addAll(nodes.getNodes("input", "hidden", "output")); // Add all bias nodes
+
+        if (possibilities.isEmpty()) return;
+
+        Gene gene = possibilities.get((int) (Math.random() * possibilities.size()));
+        gene.weightShift(neat.getWEIGHT_SHIFT_STRENGTH());
+
+        // Log
+        System.out.println("shifted weight " + gene);
     }
 
-    public void mutate_weight_random() {
-        ConnectionGene con = (ConnectionGene) connections.random();
-        if(con != null){
-            con.setWeight((Math.random() * 2 - 1) * neat.getWEIGHT_RANDOM_STRENGTH());
-        }
+    public void weight_random() {
+        List<Gene> possibilities = new ArrayList<>(connections.getGenes());           // Add all connections
+        possibilities.addAll(nodes.getNodes("input", "hidden", "output")); // Add all bias nodes
+
+        if (possibilities.isEmpty()) return;
+
+        Gene gene = possibilities.get((int) (Math.random() * possibilities.size()));
+        gene.weightRandom();
+
+        // Log
+        System.out.println("mutated weight " + gene);
     }
 
-    public void mutate_link_toggle() {
+    public void connection_toggle() {
         ConnectionGene con = (ConnectionGene) connections.random();
-        if(con != null){
-            con.setEnabled(!con.isEnabled());
-        }
+        if(con == null) return;
+        con.setEnabled(!con.isEnabled());
+
+        // Log
+        System.out.println("toggled connection " + con);
     }
 
     public double[] evaluate(double... inputs){

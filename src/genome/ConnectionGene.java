@@ -1,5 +1,7 @@
 package genome;
 
+import static lib.util.StringOps.*;
+
 public class ConnectionGene extends Gene{
 
     private NodeGene from;
@@ -45,17 +47,29 @@ public class ConnectionGene extends Gene{
         this.enabled = enabled;
     }
 
+    @Override
+    public void weightShift(double WEIGHT_SHIFT_STRENGTH) {
+        weight += (Math.random() * 2 - 1) * WEIGHT_SHIFT_STRENGTH;
+    }
+
+    @Override
+    public void weightRandom() {
+        weight = Math.random() * 2 - 1;
+    }
+
     public boolean equals(ConnectionGene other) {
         return this.from.equals(other.from) && this.to.equals(other.to);
     }
 
     @Override
     public String toString() {
-        return "ConnectionGene{" +
-                "from=" + from +
-                ", to=" + to +
-                ", weight=" + weight +
-                ", enabled=" + enabled +
-                '}';
+//        return "ConnectionGene{" +
+//                "from=" + from +
+//                ", to=" + to +
+//                ", weight=" + weight +
+//                ", enabled=" + enabled +
+//                '}';
+
+        return "ConnectionGene{" + from.getInnovationNumber() + " -> " + to.getInnovationNumber() + " : " + (enabled? formatDouble(weight,3) : "disabled") + '}';
     }
 }

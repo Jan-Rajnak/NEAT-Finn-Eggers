@@ -16,4 +16,12 @@ public class Gene {
     public void setInnovationNumber(int innovationNumber) {
         this.innovationNumber = innovationNumber;
     }
+
+    protected void weightShift(double WEIGHT_SHIFT_STRENGTH){
+        throw new UnsupportedOperationException("This gene does not support weight shifting" + this);
+    };
+
+    protected void weightRandom(){
+        throw new UnsupportedOperationException("This gene does not support weight randomization" + this);
+    }
 }

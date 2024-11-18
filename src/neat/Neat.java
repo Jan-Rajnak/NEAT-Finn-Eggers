@@ -157,4 +157,8 @@ public class Neat {
         innovations.print();
     }
 
+    public void printAllNodes(){
+        all_nodes.print();
+    }
+
 }

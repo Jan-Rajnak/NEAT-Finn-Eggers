@@ -1,6 +1,10 @@
 package genome;
 
+import org.w3c.dom.Node;
+
 import java.util.HashMap;
+
+import static lib.util.StringOps.*;
 
 public class NodeGene extends Gene{
 
@@ -49,26 +53,28 @@ public class NodeGene extends Gene{
         return 1 / (1 + Math.exp(-value));
     }
 
-    // TODO: Remove after debugging
-    public boolean isVisited() {
-        return visited;
-    }
-
-    public void visit(){
-        if (visited){
-            throw new RuntimeException("Node already visited");
+    public String getType(){
+        if (x == 0.1){
+            return "input";
+        } else if (x == 0.9){
+            return "output";
+        } else if (x == 0.15){
+            return "bias";
+        }else{
+            return "hidden";
         }
-        visited = true;
     }
 
     @Override
     public String toString() {
-        return "NodeGene{" +
-                "x=" + x +
-                ", y=" + y +
-                ", id=" + getInnovationNumber() +
-                ", value=" + value +
-                '}';
+//        return "NodeGene{" +
+//                "x=" + x +
+//                ", y=" + y +
+//                ", id=" + getInnovationNumber() +
+//                ", value=" + value +
+//                '}';
+
+        return "NodeGene{id=" + getInnovationNumber() + "; x=" + formatDouble(x, 3) +'}';
     }
 }
 

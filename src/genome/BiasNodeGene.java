@@ -1,5 +1,7 @@
 package genome;
 
+import static lib.util.StringOps.*;
+
 public class BiasNodeGene extends NodeGene{
     private double bias;
 
@@ -23,5 +25,24 @@ public class BiasNodeGene extends NodeGene{
     @Override
     public double activate() {
         return bias;
+    }
+
+    @Override
+    public void weightShift(double WEIGHT_SHIFT_STRENGTH) {
+        bias += (Math.random() * 2 - 1) * WEIGHT_SHIFT_STRENGTH;
+    }
+
+    @Override
+    public void weightRandom() {
+        bias = Math.random() * 2 - 1;
+    }
+
+    @Override
+    public String toString() {
+//        return "BiasNodeGene{" +
+//                "innovationNumber=" + innovationNumber +
+//                ", bias=" + bias +
+//                '}';
+        return "NodeGene{id=" + getInnovationNumber() + "; bias=" + formatDouble(bias, 5)+'}';
     }
 }
